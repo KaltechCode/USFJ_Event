@@ -2,7 +2,7 @@ import 'server-only';
 import { cookies } from 'next/headers';
 import { supabaseRequest } from './supabase';
 export const cookieName =
-  process.env.NODE_ENV === 'production' ? '__Host-merveille-session' : 'merveille-session';
+  process.env.NODE_ENV === 'production' ? '__Host-USFJ-session' : 'USFJ-session';
 export function adminConfigured() {
   return Boolean(
     process.env.ADMIN_USER_ID && process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_KEY,

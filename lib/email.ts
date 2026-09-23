@@ -1,7 +1,7 @@
 import 'server-only';
 import nodemailer from 'nodemailer';
 
-const ADMIN_INBOX = process.env.NOTIFY_EMAIL?.trim() || 'notification@merveille.kaltechconsultancy.tech';
+const ADMIN_INBOX = process.env.NOTIFY_EMAIL?.trim() || 'test@kaltechconsultancy.tech';
 const PURPLE = '#142560';
 const GOLD = '#db9e04';
 const CREAM = '#ffffff';
@@ -39,17 +39,17 @@ function celebrationIcs(): string {
   return [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Merveille Celebration//EN',
+    'PRODID:-//Tent of Hope//EN',
     ...events.flatMap((e) => [
       'BEGIN:VEVENT',
-      `UID:merveille-202610${e.day}@celebration`,
+      `UID:USFJ-Tent of Hope-202610${e.day}@celebration`,
       'DTSTAMP:20260922T000000Z',
       'SEQUENCE:2',
       `DTSTART:${e.start}`,
       ...(e.end ? [`DTEND:${e.end}`] : []),
       'SUMMARY:United Servants for Jesus',
-      'LOCATION:Hampton Inn & Suites - full address to be announced',
-      `DESCRIPTION:Birthday and 10 years in ministry. ${e.time}`,
+      'LOCATION:Hill of Terror- full address to be announced',
+      `DESCRIPTION:United Servants for Jesus Tent of Hope Event. ${e.time}`,
       'END:VEVENT',
     ]),
     'END:VCALENDAR',
@@ -104,7 +104,7 @@ async function sendMail(options: {
 }): Promise<void> {
   if (!mailConfigured()) return;
   const port = Number(process.env.MAIL_PORT || 465);
-  const fromName = process.env.MAIL_FROM_NAME?.trim() || 'Prophetess Merveille';
+  const fromName = process.env.MAIL_FROM_NAME?.trim() || 'United Servants for Jesus';
   const fromAddress = process.env.MAIL_FROM?.trim() || process.env.MAIL_USER || '';
   const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
@@ -129,7 +129,7 @@ async function sendMail(options: {
     attachments: options.ics
       ? [
           {
-            filename: 'merveille-celebration.ics',
+            filename: 'USFJ-Tent-of-Hope.ics',
             content: celebrationIcs(),
             contentType: 'text/calendar; charset=utf-8',
           },
@@ -174,7 +174,7 @@ function registrationHtml(entry: RegistrationNotice, audience: 'guest' | 'admin'
   }
   return card(`
     ${iconCircle('notice')}
-    <p style="margin:0 0 8px;font-size:12px;letter-spacing:2.5px;font-weight:600;color:${GOLD};text-transform:uppercase;">New ${escapeHtml(label.toLowerCase())} · Prophetess Merveille</p>
+    <p style="margin:0 0 8px;font-size:12px;letter-spacing:2.5px;font-weight:600;color:${GOLD};text-transform:uppercase;">New ${escapeHtml(label.toLowerCase())} · United Servants for Jesus</p>
     <h1 style="margin:16px 0 18px;font-family:Kodchasan,Nunito,Arial,sans-serif;font-weight:400;font-size:32px;line-height:1.2;color:${HEADING};">${escapeHtml(name)}</h1>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="text-align:left;margin:0 auto 28px;">
       ${detailLine('Form', label)}
@@ -220,7 +220,7 @@ export async function sendRegistrationNotifications(entry: RegistrationNotice): 
     }),
     sendMail({
       to: { name, address: entry.email },
-      subject: `Your ${label.toLowerCase()} form was received — Prophetess Merveille`,
+      subject: `Your ${label.toLowerCase()} form was received — United Servants for Jesus`,
       html: registrationHtml(entry, 'guest'),
       text: registrationText(entry, 'guest'),
       ics: entry.kind === 'guest',
