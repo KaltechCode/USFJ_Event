@@ -1,0 +1,363 @@
+/*
+  Flying envelope — CSS Modules for Next.js App Router.
+  Runtime overrides are injected as CSS variables on .stage from the client component.
+*/
+
+.stage {
+  --flight-duration: 3s;
+  --open-delay: 3.05s;
+  --card-delay: 3.45s;
+  --sparkle-delay: 3.6s;
+  --float-duration: 4.5s;
+  --flap-duration: 0.8s;
+  --card-duration: 0.95s;
+
+  position: relative;
+  width: min(100%, 24rem);
+  height: 17rem;
+  margin-inline: auto;
+  overflow: hidden;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.flyer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform: translate(-58%, 48%) rotate(-18deg);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.float {
+  transform-origin: center;
+}
+
+.envelope {
+  position: relative;
+  width: clamp(9.5rem, 46vw, 12rem);
+  height: 7.5rem;
+  margin-top: 2.5rem;
+}
+
+.body {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  filter: drop-shadow(0 14px 22px rgb(20 37 96 / 0.18));
+}
+
+.bodySvg,
+.flapSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.flap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2.05rem;
+  z-index: 4;
+  height: 3.4rem;
+  transform-origin: 50% 92%;
+  filter: drop-shadow(0 6px 10px rgb(20 37 96 / 0.12));
+  will-change: transform;
+}
+
+.card {
+  position: absolute;
+  left: 50%;
+  top: 0.35rem;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 3.35rem;
+  border: 2px solid #142560;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 10px 20px rgb(20 37 96 / 0.16);
+  opacity: 0;
+  transform: translate(-50%, 1.6rem) scale(0.86);
+  will-change: transform, opacity;
+}
+
+.heart {
+  display: block;
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.check {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.check svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.trail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.trailDot {
+  --i: 0;
+  position: absolute;
+  left: 8%;
+  top: 72%;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, #142560 0%, #0f1c4a 70%, transparent 100%);
+  box-shadow: 0 0 8px rgb(20 37 96 / 0.45);
+  opacity: 0;
+}
+
+.sparkles {
+  position: absolute;
+  inset: -55% -14% auto;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.sparkle {
+  --s: 0;
+  --sparkle-offset: 0;
+  position: absolute;
+  left: calc(10% + (var(--s) * 10%));
+  top: calc(30% + (var(--sparkle-offset) * 12%));
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: #db9e04;
+  opacity: 0;
+}
+
+.sparkle:nth-child(3n + 1) {
+  --sparkle-offset: 0;
+}
+
+.sparkle:nth-child(3n + 2) {
+  --sparkle-offset: 1;
+}
+
+.sparkle:nth-child(odd) {
+  background: #142560;
+  width: 0.28rem;
+  height: 0.28rem;
+}
+
+.sparkle:nth-child(3n) {
+  --sparkle-offset: 2;
+  background: #0f1c4a;
+  border-radius: 2px;
+  rotate: 45deg;
+}
+
+.sparkle:nth-child(5),
+.sparkle:nth-child(8) {
+  width: 0.55rem;
+  height: 0.28rem;
+  border-radius: 60% 0 60% 0;
+  background: color-mix(in srgb, #142560 70%, #db9e04);
+  rotate: -25deg;
+}
+
+.animate .flyer {
+  animation: fly-in var(--flight-duration) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate .float {
+  animation: gentle-float var(--float-duration) ease-in-out var(--open-delay)
+    infinite;
+}
+
+.animate .flap {
+  animation: flap-open var(--flap-duration) cubic-bezier(0.34, 1.12, 0.64, 1)
+    var(--open-delay) forwards;
+}
+
+.animate .card {
+  animation: card-rise var(--card-duration) cubic-bezier(0.22, 1, 0.36, 1)
+    var(--card-delay) forwards;
+}
+
+.animate .trailDot {
+  animation: trail-fade calc(var(--flight-duration) + 0.15s) ease-out forwards;
+  animation-delay: calc(var(--i) * 0.07s);
+}
+
+.animate .sparkle {
+  animation: sparkle 1.4s ease-out forwards;
+  animation-delay: calc(var(--sparkle-delay) + (var(--s) * 0.06s));
+}
+
+.animate.reduced .flyer,
+.animate.reduced .float,
+.animate.reduced .flap,
+.animate.reduced .card,
+.animate.reduced .trailDot,
+.animate.reduced .sparkle,
+.reduced .flyer,
+.reduced .float,
+.reduced .flap,
+.reduced .card,
+.reduced .trailDot,
+.reduced .sparkle {
+  animation: none !important;
+}
+
+.reduced .flyer {
+  opacity: 1;
+  transform: translate(0, 0) rotate(0deg);
+}
+
+.reduced .flap {
+  transform: rotate(180deg) translateY(-6px);
+}
+
+.reduced .card {
+  opacity: 1;
+  transform: translate(-50%, -3.35rem) scale(1);
+}
+
+.reduced .trail,
+.reduced .sparkles {
+  display: none;
+}
+
+@keyframes fly-in {
+  0% {
+    transform: translate(-58%, 48%) rotate(-18deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  40% {
+    transform: translate(-28%, 22%) rotate(-4deg);
+  }
+  70% {
+    transform: translate(-8%, 6%) rotate(8deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes trail-fade {
+  0% {
+    transform: translate(0, 0) scale(0.55);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(
+        calc(52% + var(--i) * 5%),
+        calc(-58% - var(--i) * 2.5%)
+      )
+      scale(0.15);
+    opacity: 0;
+  }
+}
+
+@keyframes flap-open {
+  0% {
+    transform: rotate(0deg) translateY(0);
+  }
+  100% {
+    transform: rotate(180deg) translateY(-6px);
+  }
+}
+
+@keyframes card-rise {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 1.6rem) scale(0.86);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -3.35rem) scale(1);
+  }
+}
+
+@keyframes sparkle {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.3);
+  }
+  35% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-32px) scale(0.2);
+  }
+}
+
+@keyframes gentle-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flyer,
+  .float,
+  .flap,
+  .card,
+  .trailDot,
+  .sparkle {
+    animation: none !important;
+  }
+
+  .flyer {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  .flap {
+    transform: rotate(180deg) translateY(-6px);
+  }
+
+  .card {
+    opacity: 1;
+    transform: translate(-50%, -3.35rem) scale(1);
+  }
+
+  .trail,
+  .sparkles {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .stage {
+    height: 15.5rem;
+  }
+}
