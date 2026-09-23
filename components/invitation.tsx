@@ -96,7 +96,7 @@ export function InvitationDetails() {
         <article>
           <MapPin />
           <span>THE PLACE</span>
-          <h3>Hampton Inn & Suites</h3>
+          <h3>Hill of Terror</h3>
           <p>Full address to be announced</p>
         </article>
       </div>

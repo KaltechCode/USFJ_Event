@@ -26,7 +26,7 @@ export default function Login() {
   }
   return (
     <main className="admin-login">
-      <a href="/">← Back to invitation</a>
+      <a href="/">← Back to event page</a>
       <span className="eyebrow">Tent of Hope</span>
       <h1>Organizer sign-in</h1>
       <p>Sign in to manage registrations and prepare your guest list.</p>
