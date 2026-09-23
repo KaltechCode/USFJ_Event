@@ -167,12 +167,13 @@ header {
 }
 .site-logo {
   display: block;
-  height: 84px;
+  height: 56px;
   width: auto;
+  max-width: 100%;
 }
 .closing-logo {
   display: block;
-  height: 80px;
+  height: 60px;
   width: auto;
   max-width: 90%;
   margin: 0 auto 12px;
@@ -188,12 +189,20 @@ nav {
   font-size: 17px;
   font-weight: 600;
 }
-.nav-rsvp {
+.nav-donate {
   display: flex;
   align-items: center;
   gap: 18px;
   border-bottom: 1px solid var(--gold);
   padding: 10px 0;
+  background: var(--gold);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+.nav-donate:hover {
+  background: #a67d03;
 }
 .hero {
   max-width: 1340px;
@@ -264,6 +273,7 @@ nav {
   padding: 20px 27px;
   margin-top: 26px;
   font-size: 17px;
+  border-radius: 8px;
   font-weight: 700;
 }
 .hero-cta:hover {
@@ -1027,10 +1037,10 @@ th {
     display: none;
   }
   .site-logo {
-    height: 56px;
+    height: 44px;
   }
   .closing-logo {
-    height: 88px;
+    height: 52px;
   }
   nav {
     gap: 20px;
@@ -1231,4 +1241,122 @@ th {
 .admin-session button {
   font-size: 14px;
   text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+  header {
+    padding: 24px 5%;
+  }
+  nav {
+    gap: 28px;
+  }
+  .hero {
+    padding: 56px 5% 60px;
+    gap: 4%;
+  }
+  .hero-description {
+    font-size: 19px;
+  }
+  .details {
+    padding: 75px 5% 60px;
+  }
+  .detail-grid h3 {
+    font-size: 24px;
+  }
+  .detail-grid .event-times {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 760px) {
+  header {
+    gap: 16px;
+  }
+  .hero h1 {
+    font-size: clamp(56px, 17vw, 80px);
+    letter-spacing: -2px;
+  }
+  .hero-cta {
+    gap: 20px;
+    padding: 18px 24px;
+  }
+  .photo-caption {
+    text-align: center;
+  }
+  .ribbon {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+  .deadline {
+    flex-wrap: wrap;
+    text-align: center;
+  }
+  .confirmation h2 {
+    font-size: 34px;
+  }
+  .closing {
+    padding: 50px 20px;
+  }
+  footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 420px) {
+  header {
+    padding: 16px 5%;
+  }
+  .site-logo {
+    height: 36px;
+  }
+  .closing-logo {
+    height: 44px;
+  }
+  nav {
+    gap: 14px;
+    font-size: 13px;
+  }
+  .nav-rsvp {
+    gap: 8px;
+  }
+  .hero {
+    padding: 32px 6% 40px;
+  }
+  .celebrating {
+    font-size: 22px;
+  }
+  .hero-description {
+    font-size: 16px;
+  }
+  .hero-date {
+    letter-spacing: 0.5px;
+  }
+  .detail-grid h3 {
+    font-size: 22px;
+  }
+  .detail-grid .event-times {
+    font-size: 18px;
+  }
+  .rsvp-card {
+    padding: 22px 14px;
+  }
+  .form-head h3 {
+    font-size: 26px;
+  }
+  .form-switch button {
+    font-size: 13px;
+  }
+  .submit {
+    width: 100%;
+    min-width: 0;
+  }
+  .confirmation h2 {
+    font-size: 28px;
+  }
+  .closing h2 {
+    font-size: 28px;
+  }
 }

@@ -7,8 +7,13 @@ export const metadata: Metadata = {
   description:
     'Join United Servants for Jesus. October 16–17, 2026.',
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
+    other: {
+      rel: 'icon',
+      url: '/icon.png',
+    },
   },
 };
 

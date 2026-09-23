@@ -394,7 +394,7 @@ export default function Home() {
           </a>
           <nav>
             <a href="#details">The Event</a>
-            <a href="https://buy.stripe.com/fZebMI29Ze2s1TG146" target="_blank" className="nav-rsvp">
+            <a href="https://buy.stripe.com/fZebMI29Ze2s1TG146" target="_blank" className="nav-donate">
               Donaate <ArrowUpRight size={15} />
             </a>
           </nav>
