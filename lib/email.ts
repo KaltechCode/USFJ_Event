@@ -1,7 +1,7 @@
 import 'server-only';
 import nodemailer from 'nodemailer';
 
-const ADMIN_INBOX = process.env.NOTIFY_EMAIL?.trim() || 'test@kaltechconsultancy.tech';
+const ADMIN_INBOX = process.env.NOTIFY_EMAIL?.trim() || 'notifications@usfjesus.org';
 const PURPLE = '#142560';
 const GOLD = '#db9e04';
 const CREAM = '#ffffff';
