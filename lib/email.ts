@@ -2,12 +2,11 @@ import 'server-only';
 import nodemailer from 'nodemailer';
 
 const ADMIN_INBOX = process.env.NOTIFY_EMAIL?.trim() || 'notifications@usfjesus.org';
-const PURPLE = '#142560';
+const NAVY = '#142560';
 const GOLD = '#db9e04';
-const CREAM = '#ffffff';
+const WHITE = '#ffffff';
 const LAVENDER = '#f4f6fb';
-const HEADING = '#142560';
-const MUTED = '#667085';
+const BORDER = '#dbe3f4';
 
 function mailConfigured(): boolean {
   return Boolean(process.env.MAIL_HOST && process.env.MAIL_USER && process.env.MAIL_PASS);
@@ -56,43 +55,55 @@ function celebrationIcs(): string {
   ].join('\r\n');
 }
 
-function iconCircle(kind: 'check' | 'heart' | 'notice'): string {
-  const mark = kind === 'heart' ? '♥' : kind === 'notice' ? '✦' : '✓';
-  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
-    <tr>
-      <td width="60" height="60" align="center" valign="middle" style="width:60px;height:60px;border:1px solid ${GOLD};border-radius:50%;color:${GOLD};font-size:22px;line-height:60px;font-family:Kodchasan,Nunito,Arial,sans-serif;">${mark}</td>
-    </tr>
-  </table>`;
-}
-
-function card(inner: string): string {
+function brandedEmail({
+  title,
+  intro,
+  content = '',
+  action,
+  footer = 'United Servants for Jesus | Serving our community in faith',
+}: {
+  title: string;
+  intro: string;
+  content?: string;
+  action?: { url: string; label: string };
+  footer?: string;
+}): string {
+  const site = origin();
+  const logo = site
+    ? `<img src="${escapeHtml(`${site}/usfj_white_logo.png`)}" alt="United Servants for Jesus" height="42" style="height:42px;display:inline-block;border:0;" />`
+    : 'United Servants for Jesus';
   return `<!DOCTYPE html>
 <html lang="en">
-<body style="margin:0;padding:0;background:${LAVENDER};font-family:Nunito,Arial,Helvetica,sans-serif;color:${HEADING};">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${LAVENDER};padding:36px 16px;">
-    <tr>
-      <td align="center">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:${CREAM};padding:48px 40px 52px;">
-          <tr><td align="center" style="text-align:center;">${inner}</td></tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+<body style="margin:0;padding:0;background:${LAVENDER};">
+  <div style="margin:0;background:${LAVENDER};padding:32px 16px;font-family:Arial,Helvetica,sans-serif;color:${NAVY};line-height:1.6;">
+    <div style="max-width:600px;margin:0 auto;background:${WHITE};border:1px solid ${BORDER};">
+      <div style="padding:28px 32px;background:${NAVY};text-align:center;color:${WHITE};">
+        ${logo}
+        <h1 style="margin:20px 0 0;color:${WHITE};font-size:20px;font-weight:normal;line-height:1.3;">${escapeHtml(title)}</h1>
+      </div>
+      <div style="padding:32px;">
+        <p style="margin:0 0 18px;font-size:16px;">${escapeHtml(intro)}</p>
+        ${content}
+        ${
+          action?.url
+            ? `<p style="margin:32px 0 0;text-align:center;"><a href="${escapeHtml(action.url)}" style="display:inline-block;padding:13px 22px;background:${NAVY};color:${WHITE};text-decoration:none;font-weight:bold;border-radius:4px;">${escapeHtml(action.label)}</a></p>`
+            : ''
+        }
+      </div>
+      <div style="padding:18px 32px;background:${NAVY};color:${WHITE};font-size:13px;font-weight:bold;text-align:center;">${escapeHtml(footer)}</div>
+    </div>
+  </div>
 </body>
 </html>`;
 }
 
-function button(href: string, label: string): string {
-  if (!href) return '';
-  return `<a href="${escapeHtml(href)}" style="display:inline-block;background:${PURPLE};color:#ffffff;text-decoration:none;font-size:15px;padding:16px 28px;margin-top:8px;">${escapeHtml(label)}</a>`;
-}
-
-function detailLine(label: string, value: string): string {
-  const display = value.trim() || '—';
-  return `<tr>
-    <td style="padding:10px 0;border-bottom:1px solid #e4dbce;text-align:left;font-size:13px;color:${MUTED};width:42%;">${escapeHtml(label)}</td>
-    <td style="padding:10px 0;border-bottom:1px solid #e4dbce;text-align:left;font-size:14px;color:${HEADING};">${escapeHtml(display)}</td>
-  </tr>`;
+function detailBox(rows: [label: string, value: string][]): string {
+  const lines = rows.map(([label, value], i) => {
+    const display = escapeHtml(value.trim() || '—').replace(/\n/g, '<br />');
+    const margin = i === rows.length - 1 ? '0' : '0 0 10px';
+    return `<p style="margin:${margin};"><strong>${escapeHtml(label)}:</strong> ${display}</p>`;
+  });
+  return `<div style="padding:20px;background:${LAVENDER};border-left:4px solid ${GOLD};">${lines.join('')}</div>`;
 }
 
 async function sendMail(options: {
@@ -165,29 +176,34 @@ function registrationHtml(entry: RegistrationNotice, audience: 'guest' | 'admin'
         : entry.kind === 'sponsor'
           ? 'Your sponsorship details are saved. Thank you for your support.'
           : 'You’re registered. We can’t wait to celebrate with you.';
-    return card(`
-      ${iconCircle(entry.kind === 'guest' ? 'check' : 'heart')}
-      <p style="margin:0 0 8px;font-size:12px;letter-spacing:2.5px;font-weight:600;color:${GOLD};text-transform:uppercase;">Thank you, ${escapeHtml(name)}</p>
-      <h1 style="margin:16px 0 18px;font-family:Kodchasan,Nunito,Arial,sans-serif;font-weight:400;font-size:36px;line-height:1.2;color:${HEADING};">${escapeHtml(label)} form received</h1>
-      <p style="margin:0;font-size:16px;line-height:1.7;color:${MUTED};">${thanks}</p>
-    `);
+    return brandedEmail({
+      title: `${label} form received`,
+      intro: `Thank you, ${name}`,
+      content: `<p style="margin:0;font-size:16px;">${thanks}</p>`,
+    });
   }
-  return card(`
-    ${iconCircle('notice')}
-    <p style="margin:0 0 8px;font-size:12px;letter-spacing:2.5px;font-weight:600;color:${GOLD};text-transform:uppercase;">New ${escapeHtml(label.toLowerCase())} · United Servants for Jesus</p>
-    <h1 style="margin:16px 0 18px;font-family:Kodchasan,Nunito,Arial,sans-serif;font-weight:400;font-size:32px;line-height:1.2;color:${HEADING};">${escapeHtml(name)}</h1>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="text-align:left;margin:0 auto 28px;">
-      ${detailLine('Form', label)}
-      ${detailLine('First name', entry.first_name)}
-      ${detailLine('Last name', entry.last_name)}
-      ${detailLine('Email', entry.email)}
-      ${detailLine('Phone', entry.phone)}
-      ${entry.kind === 'volunteer' ? detailLine('Volunteer areas', entry.volunteer_areas || '') : ''}
-      ${entry.kind === 'sponsor' ? detailLine('Organization', entry.organization || '') : ''}
-      ${entry.kind === 'sponsor' ? detailLine('Organization details', entry.organization_details || '') : ''}
-    </table>
-    ${button(`${origin()}/admin`, 'Open organizer dashboard')}
-  `);
+  const site = origin();
+  return brandedEmail({
+    title: `New ${label.toLowerCase()} · United Servants for Jesus`,
+    intro: name,
+    content: detailBox([
+      ['Form', label],
+      ['First name', entry.first_name],
+      ['Last name', entry.last_name],
+      ['Email', entry.email],
+      ['Phone', entry.phone],
+      ...(entry.kind === 'volunteer'
+        ? ([['Volunteer areas', entry.volunteer_areas || '']] as [string, string][])
+        : []),
+      ...(entry.kind === 'sponsor'
+        ? ([
+            ['Organization', entry.organization || ''],
+            ['Organization details', entry.organization_details || ''],
+          ] as [string, string][])
+        : []),
+    ]),
+    action: site ? { url: `${site}/admin`, label: 'Open organizer dashboard' } : undefined,
+  });
 }
 
 function registrationText(entry: RegistrationNotice, audience: 'guest' | 'admin'): string {
